@@ -1,1 +1,1 @@
-console.log('hola desde Node');
+console.log('hola');
