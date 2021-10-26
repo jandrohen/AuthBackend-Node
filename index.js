@@ -1,7 +1,7 @@
 const express = require('express');
 
 
-//  Crear el servidor/aplicación de express
+// Crear el servidor/aplicación de express
 const app = express();
 
 // Rutas
