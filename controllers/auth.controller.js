@@ -2,6 +2,7 @@ const { response, json} = require('express');
 const Usuario = require('../models/Usuario');
 const bcrypt = require('bcryptjs');
 const {connect} = require("mongoose");
+const {generarJWT} = require("../helpers/jwt");
 
 const crearUsuario = async (req, res = response) => {
 
@@ -26,7 +27,7 @@ const crearUsuario = async (req, res = response) => {
         dbUser.password = bcrypt.hashSync(password,salt);
 
         // Generar el JWT
-
+        const token = await generarJWT(dbUser.id,name)
 
         // Crear usuario de BD
         await dbUser.save();
@@ -36,6 +37,7 @@ const crearUsuario = async (req, res = response) => {
             ok: true,
             uid: dbUser.id,
             name,
+            token
         });
 
 
@@ -43,12 +45,8 @@ const crearUsuario = async (req, res = response) => {
         return res.status(500).json({
             ok: false,
             msg: 'Por favor hable con el administrador'
-        })
+        });
     }
-    return res.json({
-        ok: true,
-        msg: 'Crear usuario /new'
-    });
 
 }
 
