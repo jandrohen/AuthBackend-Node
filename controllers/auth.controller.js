@@ -3,6 +3,7 @@ const Usuario = require('../models/Usuario');
 const bcrypt = require('bcryptjs');
 const {connect} = require("mongoose");
 const {generarJWT} = require("../helpers/jwt");
+const e = require("express");
 
 const crearUsuario = async (req, res = response) => {
 
@@ -50,16 +51,54 @@ const crearUsuario = async (req, res = response) => {
 
 }
 
-const loginUsuario =  (req, res = response) => {
+
+const loginUsuario =  async (req, res = response) => {
 
     const { email, password } = req.body;
 
-    return res.json({
-        ok: true,
-        msg: 'Login de usuario /'
-    });
+    try {
+
+        const dbUser = await Usuario.findOne({email});
+
+        if (!dbUser){
+            return res.status(400).json({
+                ok: false,
+                msg: 'El correo no existe'
+            });
+        }
+
+        // Confirmar si el password hace match
+        const validPassword = bcrypt.compareSync( password,dbUser.password );
+
+        if (!validPassword){
+            return res.status(400).json({
+                ok: false,
+                msg: 'El password no existe'
+            });
+        }
+
+        // Generar el JWT
+        const token = await generarJWT(dbUser.id,dbUser.name);
+
+        // Generar respuesta exitosa
+        return res.json({
+            ok: true,
+            uid: dbUser.id,
+            name: dbUser.name,
+            token
+        });
+
+    }catch (error){
+        console.log(error)
+
+        return res.status(500).json({
+            ok:false,
+            msg:'hable const el administrador'
+        });
+    }
 
 }
+
 
 const revalidarToken = (req, res = response) => {
 
