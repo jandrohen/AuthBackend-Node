@@ -11,7 +11,6 @@ const generarJWT = ( uid, name)  =>{
 
             if (err){
                 //SALIO MAL
-                console.log(err)
                 reject(err)
             } else {
                 //SALIO BIEN
