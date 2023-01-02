@@ -43,6 +43,7 @@ const crearUsuario = async (req, res = response) => {
 
 
     } catch (e) {
+        console.log(e);
         return res.status(500).json({
             ok: false,
             msg: 'Por favor hable con el administrador'
